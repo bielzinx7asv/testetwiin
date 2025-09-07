@@ -1,7 +1,6 @@
-// netlify/functions/criarPix.js
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
-exports.handler = async function(event, context) {
+export default async function handler(req, res) {
   try {
     const response = await fetch("https://api.wiinpay.com.br/payment/create", {
       method: "POST",
@@ -20,15 +19,8 @@ exports.handler = async function(event, context) {
     });
 
     const data = await response.json();
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify(data)
-    };
+    res.status(200).json(data);
   } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message })
-    };
+    res.status(500).json({ error: error.message });
   }
-};
+}

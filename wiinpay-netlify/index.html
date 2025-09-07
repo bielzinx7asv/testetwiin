@@ -23,7 +23,7 @@
   <script>
     async function gerarPix() {
       try {
-        const response = await fetch("/.netlify/functions/criarPix", { method: "POST" });
+        const response = await fetch("/api/criarPix", { method: "POST" });
         const data = await response.json();
 
         const code = data.qrcode || data.copy_paste || "Erro ao gerar PIX";
