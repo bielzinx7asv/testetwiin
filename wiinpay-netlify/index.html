@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Pagamento WinPay - PIX R$29,90</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; background: #f4f6fc; }
+    header { background: #4a6cf7; color: #fff; padding: 20px; font-size: 22px; font-weight: bold; }
+    .container { margin: 30px auto; max-width: 500px; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    #pixCode { margin-top: 20px; padding: 15px; background: #eef3ff; border: 1px dashed #4a6cf7; word-wrap: break-word; font-weight: bold; }
+    canvas { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <header>Pagamento com PIX - R$29,90</header>
+  <div class="container">
+    <p>Escaneie o QR Code abaixo ou copie o código PIX para pagar:</p>
+    <div id="pixCode">Gerando PIX...</div>
+    <canvas id="qrcode"></canvas>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script>
+    async function gerarPix() {
+      try {
+        const response = await fetch("/.netlify/functions/criarPix", { method: "POST" });
+        const data = await response.json();
+
+        const code = data.qrcode || data.copy_paste || "Erro ao gerar PIX";
+        document.getElementById("pixCode").innerText = code;
+
+        if (code && code !== "Erro ao gerar PIX") {
+          QRCode.toCanvas(document.getElementById('qrcode'), code, function (error) {
+            if (error) console.error(error);
+          });
+        }
+      } catch (error) {
+        document.getElementById("pixCode").innerText = "Erro: " + error.message;
+      }
+    }
+    gerarPix();
+  </script>
+</body>
+</html>
